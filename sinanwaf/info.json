@@ -1,0 +1,17 @@
+{
+    "title": "司南防火墙",
+    "name": "sinanwaf",
+    "ps": "智能网站防火墙（WAF）：IP黑白名单/地区封禁、CC与暴力破解防护、SQL注入/XSS/木马检测、攻击日志与告警、基于日志的规则自学习与自动调优回滚。",
+    "versions": "1.0.0",
+    "weight": 20,
+    "author": "GT Maker",
+    "home": "https://github.com/gtmaker520/sinan-waf",
+    "checks": "/www/server/sinanwaf",
+    "install_timeout": 300,
+    "tpl_index": "index.html",
+    "tpl_scripts": [],
+    "tpl_styles": [],
+    "compatible": ["7.9", "8.0", "8.2", "8.6", "9.0", "9.2", "9.6",
+                   "10.0", "11.0", "12.0", "13.0", "13.2"],
+    "intro": ["static/intro.html"]
+}

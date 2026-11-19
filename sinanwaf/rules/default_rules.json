@@ -1,0 +1,59 @@
+{
+  "ip_black": [],
+  "ip_white": [
+    {"id": "r_ipwh_def0001", "name": "本机回环", "pattern": "127.0.0.1", "level": "low", "mode": "allow", "note": "永远放行", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0}
+  ],
+  "ip_region": [],
+  "port_proto": [
+    {"id": "r_ppt_def00001", "name": "屏蔽外部3306(MySQL)", "pattern": "3306/TCP", "level": "medium", "mode": "block", "note": "数据库端口不应暴露公网", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_ppt_def00002", "name": "屏蔽外部6379(Redis)", "pattern": "6379/TCP", "level": "medium", "mode": "block", "note": "Redis未授权访问防护", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_ppt_def00003", "name": "屏蔽外部22(SSH, 可选)", "pattern": "22/TCP", "level": "low", "mode": "log", "note": "默认仅记录, 需要时改为拦截", "source": "default", "on": false, "ctime": 0, "hits": 0, "fp": 0}
+  ],
+  "url": [
+    {"id": "r_url_def00001", "name": "phpMyAdmin探测", "pattern": "phpmyadmin|/pma/|/adminer", "level": "medium", "mode": "log", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_url_def00002", "name": "XML-RPC爆破(wp)", "pattern": "xmlrpc\\.php", "level": "medium", "mode": "block", "note": "WordPress暴力破解常用入口", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_url_def00003", "name": "隐藏文件探测", "pattern": "/\\.(git|svn|hg|DS_Store)", "level": "high", "mode": "block", "note": "源码泄露探测", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0}
+  ],
+  "ua": [
+    {"id": "r_ua_def00001", "name": "渗透测试工具", "pattern": "(sqlmap|nikto|nessus|acunetix|netsparker|wpscan|dirbuster|dirsearch|gobuster|ffuf|nuclei)", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_ua_def00002", "name": "扫描器与.masscan类", "pattern": "(masscan|zgrab|nmap scripting engine|hydra|medusa)", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_ua_def00003", "name": "脚本工具(可选拦截)", "pattern": "^(python-requests|Go-http-client|libwww-perl)", "level": "medium", "mode": "log", "note": "误报可能较高, 默认仅记录", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0}
+  ],
+  "referer": [
+    {"id": "r_ref_def00001", "name": "垃圾引流Referer", "pattern": "(gambling|casino|porn|viagra|seo-boost|backlink)", "level": "medium", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0}
+  ],
+  "sqli": [
+    {"id": "r_sli_def00001", "name": "UNION注入", "pattern": "union[^a-z]{0,10}(all )?select", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_sli_def00002", "name": "布尔盲注", "pattern": "'\\s*(or|and)\\s*'?[\\w-]+'?\\s*=\\s*'?", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_sli_def00003", "name": "恒真条件", "pattern": "(or|and)\\s+1\\s*=\\s*1", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_sli_def00004", "name": "系统表探测", "pattern": "information_schema|pg_sleep|sleep\\(|benchmark\\(|load_file", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_sli_def00005", "name": "堆叠/注释注入", "pattern": "(;\\s*(drop|delete|insert|update)\\s)|(--\\s|#\\s*$|/\\*!)", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0}
+  ],
+  "xss": [
+    {"id": "r_xss_def00001", "name": "脚本标签", "pattern": "<\\s*script", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_xss_def00002", "name": "事件属性注入", "pattern": "on(error|load|click|mouseover)\\s*=", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_xss_def00003", "name": "JS伪协议", "pattern": "javascript\\s*:|vbscript\\s*:", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_xss_def00004", "name": "eval与表达式", "pattern": "(eval|expression)\\s*\\(", "level": "medium", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0}
+  ],
+  "upload": [
+    {"id": "r_upl_def00001", "name": "上传接口落地脚本", "pattern": "(?i)(filename=|/[a-z0-9_-]*(upload|file|attach|editor)[a-z0-9_-]*/)[^\\s]{0,100}\\.(php[3-7]?|phtml|asp|aspx|jsp|jspx|exe)(\\?|$|&)", "level": "high", "mode": "block", "note": "仅匹配上传接口/文件名参数中的可执行脚本, 避免误报正常.php页面", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_upl_def00002", "name": "双扩展名绕过", "pattern": "\\.(jpg|png|gif|pdf)\\.(php|asp|jsp)", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0}
+  ],
+  "trojan": [
+    {"id": "r_trj_def00001", "name": "WebShell特征", "pattern": "(eval\\s*\\(\\s*(base64_decode|gzinflate|str_rot13))|(assert\\s*\\()|(system|passthru|shell_exec|exec)\\s*\\(\\s*\\$(_GET|_POST|_REQUEST)", "level": "high", "mode": "block", "note": "URI中出现的WebShell调用特征", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_trj_def00002", "name": "常见木马文件名", "pattern": "/(shell|cmd|hack|spy|webshell|backdoor)[\\w.-]*\\.php", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0}
+  ],
+  "bot": [
+    {"id": "r_bot_def00001", "name": "恶意爬虫黑名单", "pattern": "(semrushbot|ahrefsbot|mj12bot|dotbot|petalbot|serpstatbot|builtinbrowser)", "level": "medium", "mode": "block", "note": "SEO分析类爬虫, 按需放行", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_bot_def00002", "name": "离线抓包工具", "pattern": "(httrack|webzip|offline explorer|wget)", "level": "medium", "mode": "log", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0}
+  ],
+  "path_scan": [
+    {"id": "r_psc_def00001", "name": "敏感文件探测", "pattern": "(^|/)\\.(env|aws/credentials)|/etc/passwd|/etc/shadow|c:\\\\windows", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_psc_def00002", "name": "备份文件探测", "pattern": "\\.(bak|old|sql|dump|swp|save|~)(\\?|$)", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_psc_def00003", "name": "后台弱路径扫描", "pattern": "/(wp-admin/setup|admin\\.php|manager/html|tomcat|jenkins|actuator|console)", "level": "medium", "mode": "log", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0},
+    {"id": "r_psc_def00004", "name": "路径穿越", "pattern": "(\\.\\./){2,}|%2e%2e%2f", "level": "high", "mode": "block", "note": "", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0}
+  ],
+  "freq": [
+    {"id": "r_frq_def00001", "name": "登录暴破防护(全局CC阈值联动)", "pattern": "login|signin|auth|wp-login", "level": "medium", "mode": "block", "note": "命中登录接口的请求纳入CC高频统计, 超阈值自动封禁", "source": "default", "on": true, "ctime": 0, "hits": 0, "fp": 0}
+  ]
+}

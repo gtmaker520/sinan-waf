@@ -1,0 +1,221 @@
+{
+  "version": "1.0.0",
+  "update": 0,
+  "signatures": [
+    {
+      "id": "VS001",
+      "name": "eval/assert动态执行用户输入",
+      "group": "webshell",
+      "pattern": "(?i)(eval|assert)\\s*\\(\\s*\\$_(POST|GET|REQUEST|COOKIE)",
+      "score": 55,
+      "desc": "一句话木马典型形态"
+    },
+    {
+      "id": "VS002",
+      "name": "base64/gzinflate混淆执行",
+      "group": "obfuscation",
+      "pattern": "(?i)(eval|assert)\\s*\\(\\s*(base64_decode|gzinflate|gzuncompress|str_rot13|convert_uudecode)",
+      "score": 50,
+      "desc": "编码混淆WebShell"
+    },
+    {
+      "id": "VS003",
+      "name": "preg_replace /e 代码执行",
+      "group": "webshell",
+      "pattern": "preg_replace\\s*\\(\\s*[\"'][^\"']*?/[eE][a-zA-Z]*[\"']\\s*,",
+      "score": 55,
+      "desc": "已废弃的/e修饰符可执行PHP"
+    },
+    {
+      "id": "VS004",
+      "name": "动态函数构造执行",
+      "group": "bypass",
+      "pattern": "(?i)(create_function\\s*\\(|call_user_func(_array)?\\s*\\(\\s*['\"]?(assert|eval|system|exec|passthru)\\b|call_user_func(_array)?\\s*\\(\\s*\\$_(GET|POST|REQUEST|COOKIE))",
+      "score": 40,
+      "desc": "免杀常见手法"
+    },
+    {
+      "id": "VS005",
+      "name": "系统命令执行族",
+      "group": "backdoor",
+      "pattern": "(?i)(system|passthru|shell_exec|exec|proc_open|popen|pcntl_exec)\\s*\\(\\s*\\$_(POST|GET|REQUEST|COOKIE|SERVER)",
+      "score": 55,
+      "desc": "远程命令执行后门"
+    },
+    {
+      "id": "VS006",
+      "name": "文件写入后门",
+      "group": "backdoor",
+      "pattern": "(?i)(file_put_contents|fwrite|fputs)\\s*\\([^)]*\\$_(POST|GET|REQUEST|FILES)",
+      "score": 45,
+      "desc": "攻击者写文件落地"
+    },
+    {
+      "id": "VS007",
+      "name": "PHP可变函数调用(免杀)",
+      "group": "bypass",
+      "pattern": "\\$\\{[^}]+\\}\\s*\\(",
+      "score": 35,
+      "desc": "字符串拼接绕过关键字检测"
+    },
+    {
+      "id": "VS008",
+      "name": "中国菜刀/冰蝎/蚁剑特征",
+      "group": "webshell",
+      "pattern": "(?i)(@eval\\s*\\(\\s*\\$_|@include\\s*\\(\\s*\\$_|\\$_(POST|GET)\\[[^\\]]+\\]\\s*\\(\\$|_0x[a-f0-9]{4,}|antsword|behinder|eval\\s*\\(\\s*get_magic_quotes|\\$\\w+\\s*\\(\\s*\\$_(POST|GET|REQUEST|COOKIE))",
+      "score": 60,
+      "desc": "常见WebShell客户端特征"
+    },
+    {
+      "id": "VS009",
+      "name": "PHP文件上传器",
+      "group": "uploader",
+      "pattern": "(?i)(move_uploaded_file\\s*\\(|\\$_FILES\\[)[\\s\\S]{0,300}\\b(eval|assert|system|shell_exec|passthru|chmod)\\s*\\(",
+      "score": 40,
+      "desc": "恶意上传页面"
+    },
+    {
+      "id": "VS010",
+      "name": "图片马(PHP标签)",
+      "group": "image_trojan",
+      "pattern": "(<\\?php|<\\?=)[\\s\\S]{0,300}(\\b(eval|assert|system|shell_exec|passthru)\\s*\\(|base64_decode|\\$_(POST|GET|REQUEST))",
+      "score": 50,
+      "desc": "图片文件中夹带可执行代码"
+    },
+    {
+      "id": "VS011",
+      "name": "配置文件后门(.user.ini/.htaccess)",
+      "group": "hidden",
+      "pattern": "(?i)(auto_prepend_file|auto_append_file|php_value\\s+auto_prepend|AddType\\s+application/x-httpd-php)",
+      "score": 50,
+      "desc": "通过配置让图片解析为PHP"
+    },
+    {
+      "id": "VS012",
+      "name": "反序列化/回调后门",
+      "group": "bypass",
+      "pattern": "(?i)\\b(unserialize|assert)\\s*\\(\\s*\\$_(POST|GET|COOKIE|REQUEST)|\\b\\$_(POST|GET|REQUEST)\\s*\\[[^\\]]+\\]\\s*\\(",
+      "score": 45,
+      "desc": "反序列化或可变函数后门"
+    },
+    {
+      "id": "VS013",
+      "name": "反射/闭包免杀",
+      "group": "bypass",
+      "pattern": "(?i)(ReflectionFunction\\(|closure::)|\\$(\\w+)\\s*=\\s*['\"]\\s*(assert|eval|system|exec|passthru|shell_exec)\\b[\\s\\S]{0,200}?\\$\\1\\s*\\(|\\$\\w+\\s*=\\s*['\"][a-z_]+['\"](\\s*\\.\\s*['\"][a-z_]+['\"]){1,}[\\s\\S]{0,200}?\\$\\w+\\s*\\(",
+      "score": 25,
+      "desc": "对抗静态特征查杀"
+    },
+    {
+      "id": "VS014",
+      "name": "远程包含/下载",
+      "group": "backdoor",
+      "pattern": "(?i)(include|require)(_once)?\\s*\\(\\s*['\"]?https?://|file_get_contents\\s*\\(\\s*['\"]https?://",
+      "score": 45,
+      "desc": "远程加载恶意载荷"
+    },
+    {
+      "id": "VS015",
+      "name": "JSP/ASP一句话木马",
+      "group": "webshell",
+      "pattern": "(?i)(Runtime\\.getRuntime\\(\\)\\.exec|eval\\s*\\(\\s*request|execute\\s*\\(\\s*request|ScriptEngine)",
+      "score": 55,
+      "desc": "非PHP环境WebShell"
+    },
+    {
+      "id": "VS016",
+      "name": "敏感信息窃取",
+      "group": "stealer",
+      "pattern": "(?i)(file_get_contents\\s*\\(\\s*['\"][^\"']*(/etc/passwd|wp-config|\\.env|config\\.php)|mysqli?_query\\s*\\([^)]*\\$_(GET|POST))",
+      "score": 40,
+      "desc": "读配置/拖库行为"
+    },
+    {
+      "id": "VS017",
+      "name": "死循环隐藏/大量编码串",
+      "group": "obfuscation",
+      "pattern": "[A-Za-z0-9+/]{500,}={0,2}",
+      "score": 20,
+      "desc": "超长Base64载荷"
+    },
+    {
+      "id": "VS018",
+      "name": "PHP短标签+执行",
+      "group": "webshell",
+      "pattern": "<\\?\\s*=\\s*\\$|<%\\s*eval",
+      "score": 35,
+      "desc": "短标签隐藏后门"
+    }
+  ],
+  "dangerous_funcs": [
+    "eval",
+    "assert",
+    "system",
+    "passthru",
+    "shell_exec",
+    "exec",
+    "proc_open",
+    "popen",
+    "create_function",
+    "call_user_func",
+    "base64_decode",
+    "gzinflate",
+    "str_rot13",
+    "file_put_contents",
+    "move_uploaded_file",
+    "unserialize"
+  ],
+  "image_exts": [
+    "jpg",
+    "jpeg",
+    "png",
+    "gif",
+    "bmp",
+    "webp",
+    "ico"
+  ],
+  "script_exts": [
+    "php",
+    "php3",
+    "php4",
+    "php5",
+    "php7",
+    "phtml",
+    "phar",
+    "inc",
+    "asp",
+    "aspx",
+    "jsp",
+    "jspx",
+    "ini",
+    "htaccess",
+    "user.ini"
+  ],
+  "exclude_dirs": [
+    "node_modules",
+    ".git",
+    ".svn",
+    "vendor",
+    "cache",
+    "logs",
+    "runtime",
+    "temp",
+    "tmp",
+    "session",
+    "vendor/composer"
+  ],
+  "upload_dirs": [
+    "upload",
+    "uploads",
+    "images",
+    "attachment",
+    "attachments",
+    "static",
+    "assets",
+    "data",
+    "files",
+    "ueditor",
+    "kindeditor"
+  ],
+  "hash_blacklist": []
+}

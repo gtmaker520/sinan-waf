@@ -1,0 +1,6 @@
+# 本地测试沙箱（运行后生成，可随时删除）
+data/
+fake_server/
+__pycache__/
+*.pyc
+*.log

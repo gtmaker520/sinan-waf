@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# 本地测试沙箱（运行时生成，随时可删）
+_local_test/data/
+_local_test/fake_server/
+_local_test/**/*.log
+
+# 运行期日志与临时文件
+*.log
+*.tmp
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
