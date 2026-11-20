@@ -213,7 +213,7 @@ class Antivirus(object):
                 reasons.append('MD5黑名单:%s' % h.get('name', ''))
 
         # 2) 特征库正则（按分组适配文件类型）
-        client_side = ext in ('js', 'json', 'css')  # 纯前端文件不做服务端特征匹配
+        client_side = ext in ('js', 'json', 'css', 'map', 'html', 'htm')  # 纯前端文件不做服务端特征匹配
         for s in sigs['signatures']:
             g = s.get('group')
             if g == 'image_trojan' and not is_img:
@@ -250,9 +250,9 @@ class Antivirus(object):
         if not client_side and re.search(code_exec, text):
             score += 25
             reasons.append('用户输入直连危险函数')
+        # 多层编码混淆: 要求嵌套解码(base64_decode 的参数内还有另一层解码), 框架的正常单独调用不误报
         if not client_side and \
-                re.search(r'base64_decode\s*\(', text, re.I) and \
-                re.search(r'(gzinflate|str_rot13|convert_uudecode|chr\s*\()', text, re.I):
+                re.search(r'(?i)base64_decode\s*\([^;\n]{0,150}(gzinflate|str_rot13|convert_uudecode|gzuncompress)\s*\(', text):
             score += 15
             reasons.append('多层编码混淆')
 
@@ -268,8 +268,9 @@ class Antivirus(object):
                     score += 12
                     reasons.append('高熵编码载荷')
 
-        # 5) 图片马
-        if is_img and re.search(rb'<\?php|<\?=|<\?\s', raw):
+        # 5) 图片马: PHP 标签后邻近范围内必须有执行函数/用户输入, 官方图片中的偶然字节序列不算
+        img_php = re.search(rb'<\?php[\s\S]{0,300}(\b(eval|assert|system|shell_exec|passthru|base64_decode)\s*\(|\$_(POST|GET|REQUEST))', raw) if is_img else None
+        if img_php:
             score += 30
             reasons.append('图片内嵌PHP标签')
         if is_img and re.search(rb'\b(eval|assert|system)\s*\(', raw):
@@ -288,17 +289,19 @@ class Antivirus(object):
             score += 12
             reasons.append('隐藏脚本文件')
         parts = path.lower().split('/')
-        if not is_img and any(d in parts for d in sigs.get('upload_dirs', [])):
+        # 缓存/模板/临时等自动生成目录不属于攻击者可控的落地路径, 不叠加上下文加分
+        auto_gen = any(d in parts for d in sigs.get('exclude_dirs', []))
+        if not is_img and not auto_gen and any(d in parts for d in sigs.get('upload_dirs', [])):
             score += 10
             reasons.append('上传目录内可执行脚本')
         try:
-            if time.time() - os.path.getmtime(path) < 86400 and not is_img:
+            if not auto_gen and time.time() - os.path.getmtime(path) < 86400 and not is_img:
                 score += 5
                 reasons.append('24小时内新增/修改')
         except OSError:
             pass
 
-        if score < 15:
+        if score < 30:
             return None, {'md5': md5, 'size': len(raw)}
         level = 'critical' if score >= 80 else 'high' if score >= 55 else \
             'medium' if score >= 30 else 'low'
