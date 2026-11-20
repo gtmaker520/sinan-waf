@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "date": "2026-11-20",
+  "note": "司南防火墙 SinanWAF v1.0.0 首个发行版：站点防护/规则库/攻击日志/木马查杀/告警/规则自学习。",
+  "urls": {
+    "github": "https://github.com/gtmaker520/sinan-waf/raw/main/sinanwaf.zip",
+    "atomgit": "https://atomgit.com/api/v5/repos/gtmaker/sinan-waf/raw/sinanwaf.zip?ref=main"
+  }
+}

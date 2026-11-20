@@ -67,6 +67,20 @@ var BFW = (function () {
     $('#drawer').addClass('on');
   }
   function closeDrawer() { $('#drawer').removeClass('on'); }
+
+  function checkUpdate() {
+    toast('正在检查更新…');
+    api('UpdateCheck', {}, function (r) {
+      var d = (r && r.data) || {};
+      if (d.has_update) {
+        toast('发现新版本 v' + d.remote_version + '（当前 v' + (d.local_version || '') + '），下载地址已在新窗口打开', true);
+        var u = (d.urls && (d.urls.atomgit || d.urls.github)) || '';
+        if (u) { try { window.open(u, '_blank'); } catch (e) {} }
+      } else if (r && r.status) {
+        toast('当前已是最新版本 v' + (d.local_version || ''));
+      }
+    });
+  }
   $(document).on('click', '#drawer', function (e) { if (e.target === this) closeDrawer(); });
   $(document).on('keydown', function (e) { if (e.keyCode === 27) { closeModal(); closeDrawer(); } });
 
@@ -2274,6 +2288,7 @@ var BFW = (function () {
     /* 导航与全局 */
     go: go, reloadAll: reloadAll, loadStatusBar: loadStatusBar, loadOverview: loadOverview,
     toggleWaf: toggleWaf, toast: toast, closeModal: closeModal, closeDrawer: closeDrawer,
+    checkUpdate: checkUpdate,
     showLogDetail: showLogDetail,
     /* 站点 */
     loadSites: loadSites, setSiteMode: setSiteMode,

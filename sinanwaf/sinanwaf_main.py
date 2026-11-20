@@ -1215,6 +1215,52 @@ class main(object):
         except TypeError:
             return flask.send_file(filename, mimetype='text/html')
 
+    UPDATE_MANIFEST_URLS = (
+        # 主源 AtomGit(国内可达) + 备源 GitHub
+        'https://atomgit.com/api/v5/repos/gtmaker/sinan-waf/raw/update.json?ref=main',
+        'https://github.com/gtmaker520/sinan-waf/raw/main/update.json',
+    )
+
+    def UpdateCheck(self, get=None):
+        """检查更新: 拉取远程版本清单并与本机 info.json 版本比较"""
+        import urllib.request
+        local_ver = '0.0.0'
+        try:
+            with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                   'info.json')) as f:
+                local_ver = str(json.load(f).get('versions', local_ver))
+        except Exception:
+            pass
+        remote, err = None, []
+        for u in self.UPDATE_MANIFEST_URLS:
+            try:
+                req = urllib.request.Request(
+                    u, headers={'User-Agent': 'SinanWAF-UpdateCheck'})
+                remote = json.loads(urllib.request.urlopen(
+                    req, timeout=5).read().decode('utf-8', 'ignore'))
+                break
+            except Exception as e:
+                err.append(str(e)[:60])
+
+        def _v(v):
+            try:
+                return tuple(int(x) for x in re.split(r'[.\-]', str(v)) if x.isdigit())
+            except Exception:
+                return (0,)
+
+        if not isinstance(remote, dict):
+            return self._resp(False, msg='检查更新失败: ' + ('; '.join(err[:2]) or '网络不可用'))
+        r_ver = str(remote.get('version', '')).strip()
+        has_update = _v(r_ver) > _v(local_ver)
+        return self._resp(True, data={
+            'has_update': has_update,
+            'local_version': local_ver,
+            'remote_version': r_ver,
+            'date': remote.get('date', ''),
+            'note': remote.get('note', ''),
+            'urls': remote.get('urls', {}),
+        })
+
 
 def _api_guard(fn):
     """统一兜底: 权限异常/未捕获异常都转成 JSON 响应, 避免面板层直接 500"""
